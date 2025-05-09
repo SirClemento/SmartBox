@@ -4,6 +4,7 @@
 #include <main.h>
 
 unsigned long previousMillis50ms = 0;
+unsigned long previousMillis250ms = 0;
 unsigned long previousMillis500ms = 0;
 unsigned long previousMillis1s = 0;
 unsigned long previousMillis2s = 0;
@@ -18,6 +19,14 @@ bool Timer50ms() {
     unsigned long currentMillis50ms = millis();
     if (currentMillis50ms - previousMillis50ms >= interval50ms) {
         previousMillis50ms = currentMillis50ms;
+        return true;
+    }
+    return false;
+}
+bool Timer250ms() {
+    unsigned long currentMillis250ms = millis();
+    if (currentMillis250ms - previousMillis250ms >= 250) {
+        previousMillis250ms = currentMillis250ms;
         return true;
     }
     return false;

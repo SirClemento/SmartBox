@@ -8,7 +8,8 @@
 // I2C-Adressen
 #define PCA9536_I2C_ADDRESS 0x41 // I2C->IO
 #define SCREEN_ADDRESS 0x3C        //LCD 
-#define SHT31_ADDRESS 0x44      //SHT31
+#define SHT31_ADDRESS 0x44      //SHT31 Temperature and Humidity Sensor
+#define SCD40_ADDRESS 0x62   //SCD40 CO2 Sensor
 
 //SSD_1306 I2C Display
 #include <Wire.h>
@@ -43,6 +44,15 @@ const bool lowActive = true; //true = low active, false = high active
 #define Io2off  ~Io2on  // 0xFB
 #define Io3off  ~Io3on  // 0xF7
 #define Io4off  ~Io4on  // 0xEF
+
+//SCD 40 Befehle
+#define SCD40_CMD_START_MEASUREMENT   0x21B1
+#define SCD40_CMD_READ_MEASUREMENT    0xEC05
+#define SCD40_CMD_STOP_MEASUREMENT    0x3F86
+#define SCD40_CMD_SET_MEASUREMENT_INTERVAL 0x460D
+#define SCD40_CMD_SET_AUTO_SELF_CALIBRATION 0x241D
+#define SCD40_CMD_SET_FORCED_RECALIBRATION 0xE000
+#define SCD40_CMD_GET_DATA_READY 0xE4B8
 
 //ausgänge am IO Expander PCA9536
 #define Status_Led 0
@@ -90,4 +100,15 @@ void printDisplay(String row1, String row2, String row3); //gibt die I2C Adresse
 bool readSHT31(float* temperature, float* humidity); //liest die Temperatur und die Luftfeuchtigkeit vom SHT31 Sensor aus
 uint8_t crc8(uint8_t msb, uint8_t lsb); //CRC8 Berechnung für den SHT31 Sensor
 
+//co2
+bool scd40_init(void);
+bool scd40_start_measurement(void);
+bool scd40_stop_measurement(void);
+bool scd40_read_measurement(uint16_t* co2, float* temperature, float* humidity);
+bool scd40_data_ready(void);
+uint8_t scd40_get_status(void);
+uint8_t calculateCRC(uint8_t* data, uint8_t length);
+bool scd40_data_ready();
+bool scd40_loop_measurement(uint16_t* co2, float* temperature, float* humidity);
+float getCO2Percent(uint16_t co2);
 #endif

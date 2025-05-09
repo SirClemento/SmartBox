@@ -3,6 +3,7 @@
 #define TIMER_h
 
 extern unsigned long previousMillis50ms;
+extern unsigned long previousMillis250ms;
 extern unsigned long previousMillis500ms;
 extern unsigned long previousMillis1s;
 extern unsigned long previousMillis2s;
@@ -13,6 +14,7 @@ extern unsigned long previousMillis30s;
 extern unsigned long previousMillis60s;
 
 const long interval50ms = 50;    // 50 Millisekunden
+const long interval250ms = 250;  // 250 Millisekunden
 const long interval500ms = 500;  // 500 Millisekunden
 const long interval1s = 1000;    // 1000 Millisekunden (1 Sekunde)
 const long interval2s = 2000;    // 2000 Millisekunden (2 Sekunden)

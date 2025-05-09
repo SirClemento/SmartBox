@@ -3,6 +3,7 @@
 #include <main.h>
 #include <timer.h>
 
+
 byte* foundI2CAddresses = nullptr;
 int foundDeviceCount = 0;
 int errorCount;
@@ -11,6 +12,7 @@ int numberslave;
 bool ledstatus = false;
 bool I2C_failure;
 bool displaystatus = false;
+static bool measurementStarted = false;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 bool checkI2C_Address(int address) {
@@ -35,6 +37,7 @@ bool checkI2C() {
         Serial.println("Scan sucessfull.");
         turnOn_led(Status_Led);
         setI2C_status(false); 
+        I2C_failure = false;
         return true;  
     }
     
@@ -186,6 +189,7 @@ void writeRegister(int I2C_ADDRESS, uint8_t reg, uint8_t value ) {
     Wire.beginTransmission(I2C_ADDRESS);
     Wire.write(reg);
     Wire.write(value);
+    Wire.endTransmission();
     //Wire.endTransmission();
     if (Wire.endTransmission() != 0) {
         Serial.println("Transmission failed.");
@@ -326,5 +330,103 @@ uint8_t crc8(uint8_t msb, uint8_t lsb) {
 }
 
 
+uint8_t calculateCRC(uint8_t *data, size_t len) {
+    uint8_t crc = 0xFF;
+    for (size_t i = 0; i < len; i++) {
+        crc ^= data[i];
+        for (uint8_t bit = 8; bit > 0; bit--) {
+            if (crc & 0x80) {
+                crc = (crc << 1) ^ 0x31;
+            } else {
+                crc = (crc << 1);
+            }
+        }
+    }
+    return crc;
+}
 
+// Hilfsfunktion, um den Status zu überprüfen
+bool scd40_data_ready() {
+    
+    writeRegister(SCD40_ADDRESS, (SCD40_CMD_GET_DATA_READY >> 8) & 0xFF, SCD40_CMD_GET_DATA_READY & 0xFF);
+    delay(5);
+    Wire.requestFrom(SCD40_ADDRESS, (uint8_t)3);
+    if (Wire.available() != 3) return false;
+
+    uint8_t msb = Wire.read();
+    uint8_t lsb = Wire.read();
+    Wire.read(); // CRC byte
+
+    uint16_t status = (msb << 8) | lsb;
+    return (status & 0x07FF) != 0; // Prüfen, ob Messwerte bereit sind
+}
+
+// Startet die Messung
+bool scd40_start_measurement() {
+    writeRegister(SCD40_ADDRESS, (SCD40_CMD_START_MEASUREMENT >> 8) & 0xFF, SCD40_CMD_START_MEASUREMENT & 0xFF);
+    delay(10);  // Warten, um die Messung zu starten
+    return true;
+}
+
+// Stoppt die Messung
+bool scd40_stop_measurement() {
+    writeRegister(SCD40_ADDRESS, (SCD40_CMD_STOP_MEASUREMENT >> 8) & 0xFF, SCD40_CMD_STOP_MEASUREMENT & 0xFF);
+    delay(10);
+    return true;
+}
+
+// Liest die Messwerte: CO2, Temperatur, Luftfeuchtigkeit
+bool scd40_read_measurement(uint16_t* co2, float* temperature, float* humidity) {
+    writeRegister(SCD40_ADDRESS, (SCD40_CMD_READ_MEASUREMENT >> 8) & 0xFF, SCD40_CMD_READ_MEASUREMENT & 0xFF);
+    delay(5);
+
+    Wire.requestFrom(SCD40_ADDRESS, (uint8_t)9);  // 9 Bytes: CO2, Temp, Humidity + CRC
+    if (Wire.available() != 9) {
+        Serial.println("SCD40: Fehler beim Abrufen der Daten.");
+        return false;
+    }
+
+    // CO2
+    uint8_t co2_msb = Wire.read();
+    uint8_t co2_lsb = Wire.read();
+    Wire.read();  // CRC überspringen
+
+    // Temperatur
+    uint8_t t_msb = Wire.read();
+    uint8_t t_lsb = Wire.read();
+    Wire.read();  // CRC überspringen
+
+    // Luftfeuchtigkeit
+    uint8_t h_msb = Wire.read();
+    uint8_t h_lsb = Wire.read();
+    Wire.read();  // CRC überspringen
+
+    *co2 = (co2_msb << 8) | co2_lsb;
+    uint16_t raw_t = (t_msb << 8) | t_lsb;
+    uint16_t raw_h = (h_msb << 8) | h_lsb;
+
+    *temperature = -45.0 + 175.0 * ((float)raw_t / 65535.0);  // Umrechnung auf Temperatur in °C
+    *humidity = 100.0 * ((float)raw_h / 65535.0);  // Umrechnung auf Luftfeuchtigkeit in %
+
+    // CO2 in Prozent berechnen
+
+    Serial.printf("SCD40: CO2: %u ppm, Temp: %.2f°C, Humidity: %.2f%%\n", *co2, *temperature, *humidity);
+
+    return true;
+}
+
+// Hauptmessloop, der sicherstellt, dass die Daten bereit sind
+bool scd40_loop_measurement(uint16_t* co2, float* temperature, float* humidity) {
+    if (!scd40_data_ready()) {
+        //Serial.println("SCD40: Messdaten noch nicht bereit.");
+        return false;
+    }
+
+    return scd40_read_measurement(co2, temperature, humidity);
+}
+
+float getCO2Percent(uint16_t co2) {
+
+    return (float)co2 / 1000.0;  // Umrechnung auf CO2 in Prozent
+}
 
