@@ -13,3 +13,6 @@
 #define CLIENT_STATIC_IP IPAddress(192, 168, 10, 42)
 
 #endif
+
+
+//hallo
