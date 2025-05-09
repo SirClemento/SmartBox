@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Bernies SmartBox</title>
+    <style type='text/css'>
+        * {
+            text-align: center;
+        }
+        h1 {
+            font-size: 64px;
+        }
+        h2 {
+            font-size: 48px;
+        }
+        h3 {
+            font-size: 24px;
+        }
+        button {
+            border: none;
+            color: white;
+            width: 350px;
+            padding: 20px;
+            margin: 20px 200px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 64px;
+        }
+        .grey { background-color: grey; }
+        .red { background-color: red; }
+        .yellow { background-color: yellow; }
+        .green { background-color: green; }
+        .blue { background-color: blue; }
+        .orange { background-color: orange; }
+        .white { background-color: black; }
+        .pink { background-color: pink; }
+        .purple { background-color: purple; }
+    </style>
+
+    <script type='text/javascript'>
+        function callLEDService(element, serviceName) {
+            fetch('/' + serviceName + '?LEDID=' + element.dataset.ledid, {
+                method: 'GET',
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === 'ON')
+                        element.className = element.dataset.color;
+                    else
+                        element.className = 'grey';
+                })
+                .catch(error => {
+                    element.className = 'white';
+                });
+        }
+
+        function toggleLED(element) {
+            callLEDService(element, 'toggleLED');
+        }
+
+        function triggerLEDUpdate() {
+            callLEDService(document.getElementById('led0'), 'getLEDstatus');
+            callLEDService(document.getElementById('led1'), 'getLEDstatus');
+            callLEDService(document.getElementById('led2'), 'getLEDstatus');
+        }
+
+        setInterval(triggerLEDUpdate, 1000);
+    </script>
+</head>
+<body>
+<h1>Bernies SmartBox</h1>
+
+<div>
+    <button id='led0' data-ledid='0' data-color='blue' class='grey' onclick='toggleLED(this)'>LED1</button><br/>
+    <button id='led1' data-ledid='1' data-color='green' class='grey' onclick='toggleLED(this)'>LED2</button><br/>
+    <button id='led2' data-ledid='2' data-color='red' class='grey' onclick='toggleLED(this)'>LED3</button><br/>
+</div>
+
+<hr/>
+<h2>HTBLuVA Salzburg</h2>
+<h3>
+    Elektronik & Technische Informatik<br/>
+    Coding & Software Design<br/>
+    <a href='http://www.htl-salzburg.ac.at' target='_blank'>www.htl-salzburg.ac.at</a>
+</h3>
+</body>
+</html>
