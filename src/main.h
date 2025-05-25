@@ -60,9 +60,9 @@ const bool lowActive = true; //true = low active, false = high active
 #define Boot_Button 2
 #define reserv_Button 3
 
-// I2C-Pins für den ESP8266
-#define SDA_PIN D1
-#define SCL_PIN D2
+// I2C-Pins für den ESP8266 
+#define SDA_PIN D2
+#define SCL_PIN D1
 
 //count wie viele Geräte gefunden werden sollen, zb durchgänge
 extern int numberslave; //const int numberslave = 2; // wie viele I2C Geräte gefunden werden sollen, zb durchgänge
@@ -78,6 +78,8 @@ const long interval = 1000;  // 1 Sekunde
 //für I2C Scan
 extern byte* foundI2CAddresses;   // Dynamisches Array für die I2C-Adressen speichert alle gefundenen I2C Adressen
 
+
+
 void devicenotfound(); //aufrufen wenn slave nicht gefunden wird
 //void toggle_led_I2C(int Led_Pin); //lässt led blinken bei fehlern
 void toggle_led_time(int Led_Pin); //lässt die LED blinken
@@ -85,7 +87,7 @@ void toggleLedPin(int Led_Pin); //schaltet die LED ein oder aus
 void turnOn_led(int Led_Pin); //schaltet die LED ein
 void turnOff_led(int Led_Pin); //schaltet die LED aus
 bool checkI2C_Address(int I2C_ADDRESS); //prüft ob die I2C Adresse vorhanden ist
-bool checkI2C(); //überprüft beim starten ob alle I2C gefunden werden, überprüft nur nach anzahl und nicht nach Adresse
+bool checkI2C(int numberslave); //überprüft beim starten ob alle I2C gefunden werden, überprüft nur nach anzahl und nicht nach Adresse
 String ScanI2C(); //scannt alle I2C Adressen und gibt sie aus
 void printFoundI2CAddresses(); //gibt die gefundenen I2C Adressen aus
 void freeI2CAddresses(); //gibt den Speicher für die I2C Adressen wieder frei
@@ -96,7 +98,7 @@ uint8_t readRegister(int I2C_ADDRESS, uint8_t reg); //inbut->liest von registern
 bool checkButton(uint8_t buttonPin); //prüft ob der Button gedrückt wurde und gibt den Status zurück
 void setupDisplay(); //setzt die I2C Adresse des Displays
 void setDisplayStatus(bool status); //setzt den Status des Displays
-void printDisplay(String row1, String row2, String row3); //gibt die I2C Adresse des Displays aus
+void printDisplay(String row1, String row2, String row3, String row4); //gibt die I2C Adresse des Displays aus
 bool readSHT31(float* temperature, float* humidity); //liest die Temperatur und die Luftfeuchtigkeit vom SHT31 Sensor aus
 uint8_t crc8(uint8_t msb, uint8_t lsb); //CRC8 Berechnung für den SHT31 Sensor
 

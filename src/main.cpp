@@ -8,7 +8,7 @@ byte* foundI2CAddresses = nullptr;
 int foundDeviceCount = 0;
 int errorCount;
 unsigned long previousMillis = 0;
-int numberslave;
+//int numberslave;
 bool ledstatus = false;
 bool I2C_failure;
 bool displaystatus = false;
@@ -20,7 +20,7 @@ bool checkI2C_Address(int address) {
     return (Wire.endTransmission() == 0);
 }
 
-bool checkI2C() {
+bool checkI2C(int numberslave) {
     Serial.println("Scanning I2C bus...");
     int foundslaves = 0;
         for (byte addr = 0x01; addr < 0x7F; addr++) {     
@@ -35,7 +35,7 @@ bool checkI2C() {
     Serial.println("Scan complete.");  
     if(foundslaves == numberslave){
         Serial.println("Scan sucessfull.");
-        turnOn_led(Status_Led);
+//        turnOn_led(Status_Led);
         setI2C_status(false); 
         I2C_failure = false;
         return true;  
@@ -43,7 +43,7 @@ bool checkI2C() {
     
 Serial.println("Scan failed");
 //setI2C_status(true);
-devicenotfound();
+//devicenotfound();
 return false;
 }
 
@@ -242,7 +242,7 @@ void setDisplayStatus(bool status) {
     displaystatus = status;
 }
 
-void printDisplay(String row1, String row2, String row3) {
+void printDisplay(String row1, String row2, String row3, String row4) {
     display.clearDisplay();
     display.setTextSize(1);      // Textgröße
     display.setTextColor(SSD1306_WHITE); // Textfarbe
@@ -259,6 +259,11 @@ void printDisplay(String row1, String row2, String row3) {
     display.setCursor(0, 20);    // Position (X=0, Y=20)
     display.println(row3);
   
+    // Zeile 4 (optional)
+    if (!row4.isEmpty()) {
+        display.setCursor(0, 30); // Position (X=0, Y=30)
+        display.println(row4);
+    }
     display.display();  // Alles anzeigen
 }
 

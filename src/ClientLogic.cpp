@@ -28,7 +28,7 @@ void connectToServerAP() {
   Serial.println("Client IP: " + WiFi.localIP().toString());
 }
 
-bool requestAndGetData(String* s1, String* s2, String* s3) {
+bool requestAndGetData(String* s1, String* s2, String* s3, String* s4) {
     if (WiFi.status() == WL_CONNECTED) {
       WiFiClient client;
       HTTPClient http;
@@ -43,15 +43,19 @@ bool requestAndGetData(String* s1, String* s2, String* s3) {
         // Aufteilen bei Komma
         int c1 = payload.indexOf(',');
         int c2 = payload.indexOf(',', c1 + 1);
+        int c3 = payload.indexOf(',', c2 + 1);
+
   
-        if (c1 == -1 || c2 == -1) {
-          Serial.println("unexpected payload format: " + payload);
-          return false;
-        }
-  
-        *s1 = payload.substring(0, c1);
-        *s2 = payload.substring(c1 + 1, c2);
-        *s3 = payload.substring(c2 + 1);
+      // Sicherstellen, dass es mindestens drei Kommata gibt
+      if (c1 == -1 || c2 == -1 || c3 == -1) {
+        Serial.println("unexpected payload format: " + payload);
+        return false;
+      }
+
+      *s1 = payload.substring(0, c1);
+      *s2 = payload.substring(c1 + 1, c2);
+      *s3 = payload.substring(c2 + 1, c3);
+      *s4 = payload.substring(c3 + 1);
   
         return true;
       } else {

@@ -4,6 +4,6 @@
 #include <Arduino.h>
 
 void connectToServerAP();
-bool requestAndGetData(String* s1, String* s2, String* s3);
+bool requestAndGetData(String* s1, String* s2, String* s3, String* s4);
 
 #endif
