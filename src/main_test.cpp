@@ -60,9 +60,9 @@ void setup() {
     } 
     if(checkI2C_Address(SCD40_ADDRESS) == true){
     if (scd40_start_measurement()) {
-        Serial.println("Messung gestartet!");
+        Serial.println("start measure!");
     } else {
-        Serial.println("Fehler beim Starten der Messung.");
+        Serial.println("failed to measure");
     }
 }
 }

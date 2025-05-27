@@ -13,11 +13,11 @@ void connectToServerAP() {
 
   // Statische IP für den Client
   if (!WiFi.config(CLIENT_STATIC_IP, WIFI_AP_IP, WIFI_AP_SUBNET)) {
-    Serial.println("Fehler beim Setzen der statischen IP");
+    Serial.println("Failed to configure static IP");
   }
 
   WiFi.begin(ssid, password);
-  Serial.print("🔌 Verbinde mit AP");
+  Serial.print("Connect to Api");
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
