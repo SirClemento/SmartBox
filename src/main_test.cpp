@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "main.h"
+#include "I2C.h"
 #include "timer.h"
 #include "ServerLogic.h"
 #include "ClientLogic.h"

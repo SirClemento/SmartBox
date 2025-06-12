@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <timer.h>
-#include <main.h>
+#include <I2C.h>
 
 unsigned long previousMillis50ms = 0;
 unsigned long previousMillis250ms = 0;

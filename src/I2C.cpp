@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <main.h>
+#include <I2C.h>
 #include <timer.h>
 
 

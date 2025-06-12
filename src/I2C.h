@@ -61,8 +61,8 @@ const bool lowActive = true; //true = low active, false = high active
 #define reserv_Button 3
 
 // I2C-Pins für den ESP8266 
-#define SDA_PIN D2
-#define SCL_PIN D1
+#define SDA_PIN D1
+#define SCL_PIN D2
 
 //count wie viele Geräte gefunden werden sollen, zb durchgänge
 extern int numberslave; //const int numberslave = 2; // wie viele I2C Geräte gefunden werden sollen, zb durchgänge
