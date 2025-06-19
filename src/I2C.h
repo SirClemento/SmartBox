@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-
 // I2C-Adressen
 #define PCA9536_I2C_ADDRESS 0x41 // I2C->IO
 #define SCREEN_ADDRESS 0x3C        //LCD 
@@ -12,7 +11,6 @@
 #define SCD40_ADDRESS 0x62   //SCD40 CO2 Sensor
 
 //SSD_1306 I2C Display
-#include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -25,7 +23,6 @@ extern bool displaystatus; //true = display ist aktiv, false = display ist inakt
 const bool lowActive = true; //true = low active, false = high active
 
 //SHT31
-
 #define MEASURE_CMD 0x2400 // Befehl zum Messen von Temperatur und Luftfeuchtigkeit
 
 // PCA9536 Register und Pinärcodes für Output
@@ -69,19 +66,16 @@ extern int numberslave; //const int numberslave = 2; // wie viele I2C Geräte ge
 extern int errorCount;
 const int maxErrorrounds = 3;
 
+//für I2C Scan
+extern byte* foundI2CAddresses;   // Dynamisches Array für die I2C-Adressen speichert alle gefundenen I2C Adressen
+
 //für LED Blink
 extern unsigned long previousMillis;
 extern bool ledstatus;
 extern bool I2C_failure;
 const long interval = 1000;  // 1 Sekunde
 
-//für I2C Scan
-extern byte* foundI2CAddresses;   // Dynamisches Array für die I2C-Adressen speichert alle gefundenen I2C Adressen
-
-
-
 void devicenotfound(); //aufrufen wenn slave nicht gefunden wird
-//void toggle_led_I2C(int Led_Pin); //lässt led blinken bei fehlern
 void toggle_led_time(int Led_Pin); //lässt die LED blinken
 void toggleLedPin(int Led_Pin); //schaltet die LED ein oder aus
 void turnOn_led(int Led_Pin); //schaltet die LED ein
@@ -103,14 +97,14 @@ bool readSHT31(float* temperature, float* humidity); //liest die Temperatur und 
 uint8_t crc8(uint8_t msb, uint8_t lsb); //CRC8 Berechnung für den SHT31 Sensor
 
 //co2
-bool scd40_init(void);
-bool scd40_start_measurement(void);
-bool scd40_stop_measurement(void);
-bool scd40_read_measurement(uint16_t* co2, float* temperature, float* humidity);
-bool scd40_data_ready(void);
-uint8_t scd40_get_status(void);
-uint8_t calculateCRC(uint8_t* data, uint8_t length);
-bool scd40_data_ready();
-bool scd40_loop_measurement(uint16_t* co2, float* temperature, float* humidity);
-float getCO2Percent(uint16_t co2);
+bool scd40_init(void); //initialisiert den SCD40 Sensor
+bool scd40_start_measurement(void); //startet die Messung des SCD40 Sensors
+bool scd40_stop_measurement(void); //stoppt die Messung des SCD40 Sensors
+bool scd40_read_measurement(uint16_t* co2, float* temperature, float* humidity); //liest die Messwerte des SCD40 Sensors aus
+bool scd40_data_ready(void); //prüft ob die Messdaten des SCD40 Sensors bereit sind
+uint8_t scd40_get_status(void); //liest den Status des SCD40 Sensors aus
+uint8_t calculateCRC(uint8_t* data, uint8_t length); //berechnet die CRC für den SCD40 Sensor
+bool scd40_data_ready(); //prüft ob die Messdaten des SCD40 Sensors bereit sind
+bool scd40_loop_measurement(uint16_t* co2, float* temperature, float* humidity); //führt eine Messung des SCD40 Sensors durch, wenn die Daten bereit sind
+float getCO2Percent(uint16_t co2); //berechnet den CO2 Gehalt in Prozent aus den Messwerten des SCD40 Sensors
 #endif

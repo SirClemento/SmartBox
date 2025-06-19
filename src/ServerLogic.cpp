@@ -3,9 +3,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-
-
-
 ESP8266WebServer server(80);
 String g_s1, g_s2, g_s3, g_s4;
 

@@ -74,78 +74,6 @@ void setup() {
 }
 
 void loop() {
-    /*
-    delay(20);
-    
-    checkButton(Boot_Button); // Überprüfen Sie den Status des Boot-Buttons
-
-    if(Timer500ms()){
-        //Serial.println("50ms Timer triggered.");
-         if(checkButton(reserv_Button)){
-        toggleLedPin(Wifi_Led);
-        }
-    }
-    
-   /* if(Timer2s()){
-        /*if(checkI2C_Address(SHT31_ADDRESS) == true){
-        Serial.println("2s Timer triggered.");
-        readSHT31(&temperature, &humidity);    
-        String row1 = "Temperatur " + String(temperature, 2);  // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
-        String row2 = "Humidity " + String(humidity, 2); // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
-        String row3 = "CO2";
-        if(displaystatus){  
-        printDisplay(row1, row2, row3);// Geben Sie den Status auf dem Display aus
-        }
-
-        sendStringsToClient(row1, row2, row3); // Senden Sie die Strings an den Client
-        serverHandle(); // Verarbeiten Sie die Serveranfragen
-
-        //sendData(String(temperature, 2),String(humidity, 2) , "Humidity"); // Senden Sie die Daten über ESP-NOW
-    //}
-    }*/
-
-    /*if(Timer10s()){
-        Serial.println("10s Timer triggered.");  
-
-        ScanI2C(); // Rufen Sie die ScanI2C-Funktion auf   
-        printFoundI2CAddresses(); // Geben Sie die gefundenen I2C-Adressen aus
-        freeI2CAddresses(); // Geben Sie den Speicher für die I2C-Adressen wieder frei
-     }
-*//*
-    if(Timer1s()){   
-        //Serial.println("1s Timer triggered.");  
-        //printf("I2C status: %d\n", getI2C_status()); 
-        if(getI2C_status()){
-        toggleLedPin(Status_Led);  // Blinken Sie die LED an Pin 0
-    }
-       
-    }
-
-    if(Timer5s()){
-        Serial.println("5s Timer triggered.");
-        if(checkI2C_Address(SCD40_ADDRESS) == true){
-        if (scd40_loop_measurement(&co2, &temperature, &humidity)) {
-        co2_perent = getCO2Percent(co2); // Berechnen Sie den CO2-Gehalt    
-        // Messwerte erfolgreich abgerufen
-
-        String row1 = "Temperatur " + String(temperature, 2);  // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
-        String row2 = "Humidity " + String(humidity, 2); // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
-        String row3 = "CO2 " + String(co2_perent, 2); // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
-        if(displaystatus){  
-        printDisplay(row1, row2, row3);// Geben Sie den Status auf dem Display aus
-        }
-
-        sendStringsToClient(row1, row2, row3); // Senden Sie die Strings an den Client
-        serverHandle(); // Verarbeiten Sie die Serveranfragen
-        delay(2000);  // Pause zwischen Messungen
-    } else {
-        Serial.println("Fehler beim Abrufen der Messwerte.");
-        delay(1000);  // Wiederhole nach 1 Sekunde
-    }
-    }
-}
-       */
-
     if(DisplayBoxModus){
         DisplayBox(); // Rufen Sie die Funktion für das DisplayBox-Modul auf
     }
@@ -160,11 +88,11 @@ while(true){
     delay(100);
     if(Timer2s()) { 
         Serial.println("5s Timer"); // Timer für 5 Sekunden
-       requestAndGetData(&receivedRow1, &receivedRow2, &receivedRow3, &receivedRow4); // Rufen Sie die Funktion auf, um Daten vom Server zu erhalten
-        Serial.println("row1: " + receivedRow1); // Geben Sie den Status auf dem Display aus
-        Serial.println("row2: " + receivedRow2); // Geben Sie den Status auf dem Display aus
-        Serial.println("row3: " + receivedRow3); // Geben Sie den Status auf dem Display aus
-        Serial.println("row4: " + receivedRow4); // Geben Sie den Status auf dem Display aus
+       requestAndGetData(&receivedRow1, &receivedRow2, &receivedRow3, &receivedRow4); //  um Daten vom Server zu erhalten
+        Serial.println("row1: " + receivedRow1); 
+        Serial.println("row2: " + receivedRow2); 
+        Serial.println("row3: " + receivedRow3); 
+        Serial.println("row4: " + receivedRow4);
         if(displaystatus){  
             String row1 = receivedRow1;  // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
             String row2 = receivedRow2; // Ruft die ScanI2C-Funktion auf und speichert den Rückgabewert (String)
@@ -180,8 +108,6 @@ while(true){
 void SmartBox(){
     while(true){
     delay(20);
-    
-    checkButton(Boot_Button); // Überprüfen Sie den Status des Boot-Buttons
 
     if(Timer500ms()){
         //Serial.println("50ms Timer triggered.");
@@ -206,15 +132,6 @@ void SmartBox(){
         serverHandle(); // Verarbeiten Sie die Serveranfragen
     }
     }
-
-    /*if(Timer10s()){
-        Serial.println("10s Timer triggered.");  
-
-        ScanI2C(); // Rufen Sie die ScanI2C-Funktion auf   
-        printFoundI2CAddresses(); // Geben Sie die gefundenen I2C-Adressen aus
-        freeI2CAddresses(); // Geben Sie den Speicher für die I2C-Adressen wieder frei
-     }
-*/
     if(Timer1s()){   
         //Serial.println("1s Timer triggered.");  
         //printf("I2C status: %d\n", getI2C_status()); 
